@@ -384,7 +384,3 @@ Current compile flags:
 ```
 
 If your folder structure is different, update the include paths in `compile_flags.txt`.
-
-## License
-
-No license has been specified yet.
