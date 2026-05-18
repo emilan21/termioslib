@@ -7,6 +7,17 @@
 #include <termios.h>
 #include <unistd.h>
 
+#define TERMIOSLIB_ERASE_SCREEN "\x1b[2J"
+#define TERMIOSLIB_RESET "\x1b[0m"
+#define TERMIOSLIB_CURSOR_HOME "\x1b[H"
+#define TERMIOSLIB_CURSOR_NEXT_LINE "\x1b[1E"
+#define TERMIOSLIB_ALT_BUFF_ENABLE "\x1b[?1049h"
+#define TERMIOSLIB_ALT_BUFF_DISABLE "\x1b[?1049l"
+#define TERMIOSLIB_HIDE_CURSOR "\x1b[?25l"
+#define TERMIOSLIB_SHOW_CURSOR "\x1b[?25h"
+#define TERMIOSLIB_SET_FG_RGB "\x1b[38;2;%d;%d;%dm"
+#define TERMIOSLIB_SET_BG_RGB "\x1b[48;2;%d;%d;%dm"
+
 typedef struct {
   struct termios orig_termios;
 

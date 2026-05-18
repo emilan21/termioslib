@@ -24,14 +24,15 @@ term_context *term_create(u32 capacity, mem_arena *arena) {
   term->buf = PUSH_ARRAY(arena, u8, capacity);
   memset(term->buf, 0, capacity);
 
-  string8 to_write = STR8_LIT("\x1b[?1049h\x1b[2J");
+  string8 to_write =
+      STR8_LIT(TERMIOSLIB_ALT_BUFF_ENABLE TERMIOSLIB_ERASE_SCREEN);
   write(STDOUT_FILENO, to_write.str, to_write.size);
 
   return term;
 }
 
 void term_quit(term_context *term) {
-  string8 to_write = STR8_LIT("\x1b[?1049l");
+  string8 to_write = STR8_LIT(TERMIOSLIB_ALT_BUFF_DISABLE);
   write(STDOUT_FILENO, to_write.str, to_write.size);
 
   tcsetattr(STDIN_FILENO, TCSAFLUSH, &term->orig_termios);
@@ -75,9 +76,15 @@ b32 col_eq(win_col a, win_col b) {
 
 void set_col(term_context *term, win_col c, b32 fg) {
   u8 chars[21] = {0};
+  u32 size = 0;
 
-  u32 size = snprintf((char *)chars, sizeof(chars), "\x1b[%d8;2;%d;%d;%dm",
-                      fg ? 3 : 4, c.r, c.g, c.b);
+  if (fg != 0) {
+    size = snprintf((char *)chars, sizeof(chars), TERMIOSLIB_SET_FG_RGB, c.r,
+                    c.g, c.b);
+  } else {
+    size = snprintf((char *)chars, sizeof(chars), TERMIOSLIB_SET_BG_RGB, c.r,
+                    c.g, c.b);
+  }
 
   term_write(term, (string8){chars, size});
 }
