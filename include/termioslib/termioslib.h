@@ -7,14 +7,29 @@
 #include <termios.h>
 #include <unistd.h>
 
-#define TERMIOSLIB_ERASE_SCREEN "\x1b[2J"
-#define TERMIOSLIB_RESET "\x1b[0m"
+// Cursor Controls
 #define TERMIOSLIB_CURSOR_HOME "\x1b[H"
+#define TERMIOSLIB_CURSOR_MOVE_UP_NUM_LINES "\x1b[#A"
+#define TERMIOSLIB_CURSOR_MOVE_DOWN_NUM_LINES "\x1b[#B"
+#define TERMIOSLIB_CURSOR_MOVE_RIGHT_NUM_COL "\x1b[#C"
+#define TERMIOSLIB_CURSOR_MOVE_LEFT_NUM_COL "\x1b[#D"
 #define TERMIOSLIB_CURSOR_NEXT_LINE "\x1b[1E"
+#define TERMIOSLIB_CURSOR_PREV_LINE "\x1b[#F"
+#define TERMIOSLIB_CURSOR_MOVE_COL "\x1b[#G"
+
+// Erase Controls
+#define TERMIOSLIB_ERASE_SCREEN "\x1b[2J"
+
+// Colors / Graphics Mode
+#define TERMIOSLIB_RESET "\x1b[0m"
+
+// Common Private Modes
 #define TERMIOSLIB_ALT_BUFF_ENABLE "\x1b[?1049h"
 #define TERMIOSLIB_ALT_BUFF_DISABLE "\x1b[?1049l"
 #define TERMIOSLIB_HIDE_CURSOR "\x1b[?25l"
 #define TERMIOSLIB_SHOW_CURSOR "\x1b[?25h"
+
+// RGB Colors
 #define TERMIOSLIB_SET_FG_RGB "\x1b[38;2;%d;%d;%dm"
 #define TERMIOSLIB_SET_BG_RGB "\x1b[48;2;%d;%d;%dm"
 
