@@ -26,15 +26,16 @@ term_context *term_create(u32 capacity, mem_arena *arena) {
   term->buf = PUSH_ARRAY(arena, u8, capacity);
   memset(term->buf, 0, capacity);
 
-  string8 to_write =
-      STR8_LIT(TERMIOSLIB_ALT_BUFF_ENABLE TERMIOSLIB_ERASE_SCREEN);
+  string8 to_write = STR8_LIT(TERMIOSLIB_ALT_BUFF_ENABLE TERMIOSLIB_ERASE_SCREEN
+                                  TERMIOSLIB_HIDE_CURSOR);
   write(STDOUT_FILENO, to_write.str, to_write.size);
 
   return term;
 }
 
 void term_quit(term_context *term) {
-  string8 to_write = STR8_LIT(TERMIOSLIB_ALT_BUFF_DISABLE);
+  string8 to_write = STR8_LIT(
+      TERMIOSLIB_ALT_BUFF_DISABLE TERMIOSLIB_SHOW_CURSOR TERMIOSLIB_RESET);
   write(STDOUT_FILENO, to_write.str, to_write.size);
 
   tcsetattr(STDIN_FILENO, TCSAFLUSH, &term->orig_termios);
@@ -233,4 +234,19 @@ void win_border(term_win *win) {
   }
 
   term_write_c(win->term, '+');
+}
+
+term_win win_inset(term_win *win, u32 amount) {
+  return (term_win){
+      .term = win->term,
+      .rect =
+          {
+              .x = win->rect.x + amount,
+              .y = win->rect.y + amount,
+              .w = win->rect.w - amount * 2,
+              .h = win->rect.h - amount * 2,
+          },
+      .cursor_x = 0,
+      .cursor_y = 0,
+  };
 }

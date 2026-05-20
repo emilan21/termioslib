@@ -95,5 +95,6 @@ void win_write(term_win *win, string8 str);
 void win_write_line(term_win *win, u32 y, string8 str, win_align align);
 void win_clear(term_win *win);
 void win_border(term_win *win);
+term_win win_inset(term_win *win, u32 amount);
 
 #endif

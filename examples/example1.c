@@ -14,10 +14,11 @@ int main(void) {
   term_context *term = term_create(1 << 20, perm_arena);
 
   term_win main_win = win_create(term, 1, 1, WIDTH, HEIGHT);
+  term_win content_win = win_inset(&main_win, 2);
 
   while (1) {
     u8 input = 0;
-    read(STDIN_FILENO, &input, 1);
+    term_read(term, &input, 1);
 
     if (input == 'q') {
       break;
@@ -30,20 +31,19 @@ int main(void) {
     win_clear(&main_win);
     win_border(&main_win);
 
-    term_win content = win_create(term, 3, 3, WIDTH - 4, HEIGHT - 4);
-
     set_col(term, FG_CONTENT, 1);
 
-    win_write_line(&content, 0, TITLE, WIN_ALIGN_CENTER);
-    win_write_line(&content, 2, STR8_LIT("hello world"), WIN_ALIGN_LEFT);
-    win_write_line(&content, 3, STR8_LIT("how are you!"), WIN_ALIGN_LEFT);
-    win_write_line(&content, 4, STR8_LIT("I'm good"), WIN_ALIGN_RIGHT);
+    win_write_line(&content_win, 0, TITLE, WIN_ALIGN_CENTER);
+    win_write_line(&content_win, 2, STR8_LIT("hello world"), WIN_ALIGN_LEFT);
+    win_write_line(&content_win, 3, STR8_LIT("how are you!"), WIN_ALIGN_LEFT);
+    win_write_line(&content_win, 4, STR8_LIT("I'm good"), WIN_ALIGN_LEFT);
 
     term_flush(term);
 
     usleep(200 * 1000);
   }
 
+  term_flush(term);
   term_quit(term);
 
   arena_destroy(perm_arena);
