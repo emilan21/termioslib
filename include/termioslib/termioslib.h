@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 // Cursor Controls
+#define TERMIOSLIB_CURSOR_POS "\x1b[%d;%dH"
 #define TERMIOSLIB_CURSOR_HOME "\x1b[H"
 #define TERMIOSLIB_CURSOR_MOVE_UP_NUM_LINES "\x1b[#A"
 #define TERMIOSLIB_CURSOR_MOVE_DOWN_NUM_LINES "\x1b[#B"
@@ -56,6 +57,24 @@ typedef struct {
   win_tile *data;
 } win_buf;
 
+typedef struct {
+  u32 x, y, w, h;
+} win_rect;
+
+typedef enum {
+  WIN_ALIGN_LEFT,
+  WIN_ALIGN_CENTER,
+  WIN_ALIGN_RIGHT,
+} win_align;
+
+typedef struct {
+  term_context *term;
+  win_rect rect;
+  u32 cursor_x;
+  u32 cursor_y;
+} term_win;
+
+// Terminal Functions
 term_context *term_create(u32 capacity, mem_arena *arena);
 void term_quit(term_context *term);
 u32 term_read(term_context *term, u8 *keys, u32 capacity);
@@ -63,7 +82,18 @@ void term_write(term_context *term, string8 str);
 void term_write_c(term_context *term, u8 c);
 void term_flush(term_context *term);
 
+// Color Functions
 b32 col_eq(win_col a, win_col b);
 void set_col(term_context *term, win_col c, b32 fg);
+
+// Window Functions
+// y, x
+void term_move_to(term_context *term, u32 x, u32 y);
+term_win win_create(term_context *term, u32 x, u32 y, u32 w, u32 h);
+void win_move_to(term_win *win, u32 x, u32 y);
+void win_write(term_win *win, string8 str);
+void win_write_line(term_win *win, u32 y, string8 str, win_align align);
+void win_clear(term_win *win);
+void win_border(term_win *win);
 
 #endif
