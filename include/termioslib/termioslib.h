@@ -34,6 +34,13 @@
 #define TERMIOSLIB_SET_FG_RGB "\x1b[38;2;%d;%d;%dm"
 #define TERMIOSLIB_SET_BG_RGB "\x1b[48;2;%d;%d;%dm"
 
+// HEX to RGB
+#define WIN_COL_HEX(hex)                                                       \
+  (win_col) {                                                                  \
+    .r = (((hex) >> 16) & 0xff), .g = (((hex) >> 8) & 0xff),                   \
+    .b = ((hex) & 0xff),                                                       \
+  }
+
 typedef struct {
   struct termios orig_termios;
 
@@ -85,6 +92,7 @@ void term_flush(term_context *term);
 // Color Functions
 b32 col_eq(win_col a, win_col b);
 void set_col(term_context *term, win_col c, b32 fg);
+b32 win_col_from_hex_str(string8 str, win_col *out);
 
 // Window Functions
 // y, x

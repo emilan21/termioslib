@@ -93,6 +93,48 @@ void set_col(term_context *term, win_col c, b32 fg) {
   term_write(term, (string8){chars, size});
 }
 
+b32 win_col_from_hex_str(string8 str, win_col *out) {
+  if (out == NULL) {
+    return false;
+  }
+
+  if (str.size == 7 && str.str[0] == '#') {
+    str.str += 1;
+    str.size -= 1;
+  }
+
+  if (str.size != 6) {
+    return false;
+  }
+
+  u32 value = 0;
+
+  for (u64 i = 0; i < str.size; i++) {
+    u8 c = str.str[i];
+    u32 digit = 0;
+
+    if (c >= '0' && c <= '9') {
+      digit = c - '0';
+    } else if (c >= 'a' && c <= 'f') {
+      digit = 10 + c - 'a';
+    } else if (c >= 'A' && c <= 'F') {
+      digit = 10 + c - 'A';
+    } else {
+      return false;
+    }
+
+    value = (value << 4) | digit;
+  }
+
+  *out = (win_col){
+      .r = (u8)((value >> 16) & 0xff),
+      .g = (u8)((value >> 8) & 0xff),
+      .b = (u8)(value & 0xff),
+  };
+
+  return true;
+}
+
 // Window Functions
 void term_move_to(term_context *term, u32 x, u32 y) {
   u8 chars[64];
